@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Frontend Web Performance Optimization</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>Frontend Web Performance Optimization</h1>
+					<p>Presented by <a href="http://tmbritton.com">Thomas Britton</a> / Github: <a href="http://github.com/tmbritton">tmbritton</a><br>
+						Web Developer - Digital Web Team<br />
+						<a href="mailto:tom.britton@wholefoods.com">tom.britton@wholefoods.com</a>
+					</p>	
+				</section>	
+
+				<section>
+					<section>
+						<h1>HTTP</h1>
+						<p class="fragment"><strong>H</strong>yper<strong>T</strong>ext</p>
+						<p class="fragment"><strong>T</strong>ransfer</p>
+						<p class="fragment"><strong>P</strong>rotocol</p>
+						<p class="fragment"><small>(Obligatory abbreviation definition)</small></p>
+					</section>
+
+					<section>
+						<h1>So what is it good for?</h1>
+						<p class="fragment">It's the communications protocol that runs on top of TCP/IP that's the foundation of data transfer on the web</p>
+					</section>	
+
+					<section>
+						<h1>Sounds neck-beardy. Why do I care?</h1>
+						<p class="fragment">Most of our performance optimization techniques are work-arounds for deficiencies in HTTP 1.1</p>
+					</section>
+
+					<section>
+						<h1>HTTP/2</h1>
+						<p>HTTP/2 is a whole different ballgame and addresses a lot of the deficiencies we've for which developed work-arounds. Using the techniques to optimize for HTTP 1 on a HTTP/2 server could actually degrade performance.
+						<p class="fragment">The HTTP/2 specification was published as <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> in May 2015. Most major modern browsers already support HTTP/2</p>
+						<p class="fragment"><a href="http://caniuse.com/#search=http%2F2">Browser support</a> is good and <a href="https://github.com/http2/http2-spec/wiki/Implementations">server support</a> is coming along.</p>
+					</section>	
+				</section>	
+
+				<section>
+					<section>
+						<h1>The HTTP request/response cycle</h1>
+						<p class="fragment">A drastically simplified description.</p>
+					</section>
+
+					<section>
+						<h1>DNS Lookup</h1>
+						<p class="fragment">
+							<strong>D</strong>omain <strong>N</strong>ame <strong>S</strong>ervice<br>
+							<small>(Obligatory abbreviation definition)</small>
+						</p>
+						<p class="fragment">DNS translates an IP address to a readable domain name</p>
+						<p class="fragment">216.58.218.110 = www.google.com, for example</p>
+					</section>	
+
+					<section>
+						<h1>TCP/IP Connection</h1>
+						<p class="fragment">Oh lord, more neckbeardiness.</p>
+						<p class="fragment">
+							<strong>T</strong>ransfer <strong>C</strong>ontol <strong>P</strong>rotocol / <strong>I</strong>nternet <strong>P</strong>rotocol<br> 
+							<small>(Obligatory abbreviation definition)</small>
+						</p>
+						<p class="fragment">TCP handles the breaking of data into packets and IP handles the routing of the packets</p>
+						<p class="fragment">Avoiding establishing these connection is the reason behind many of the performance optimization techniques developed over the years.</p>
+						<p class="fragment">CSS Sprites, CSS &amp; JS Concatenation, browser caching.</p>
+					</section>	
+
+					<section>
+						<h1>Establishing a TCP/IP Connection</h1>
+						<p class="fragment"><img src="images/tcpopen3way.png" alt="TCP/IP 3-way handshake" /></p>
+					</section>
+
+					<section>
+						<h1>This 3-way handshake is performed for every file requested from a server</h1>
+					</section>	
+
+					<section>
+						<img src="images/yodawg.jpg" />
+						<p class="fragment"><small>(Obligatory internet meme)</small></p>
+					</section>	
+
+				</section>	
+
+				<section>
+					<section>
+						<h1>How do we optimize our website?</h1>
+						<img src="images/simply.jpg" />
+					</section>	
+
+					<section>
+						<h1>Reducing the number of TCP/IP Connections</h1>
+						<h2 class="fragment">Concatenating files together</h2>
+						<p class="fragment">CSS &amp; JS concatenation</p>
+						<p class="fragment">CSS Sprites</p>
+					</section>	
+
+					<section>
+						<h1>Reducing file size</h1>
+						<p class="fragment">Image optimization</p>
+						<p class="fragment">CSS &amp; JS minification</p>
+					</section>	
+				
+					<section>
+						<h1>Increasing number of parallel connections</h1>
+						<p class="fragment">Domain Sharding/CDN</p>
+						<p class="fragment">
+							Most browsers support a max of 6 connections per domain.<br>
+							And more across multiple domains. (<a href="http://www.browserscope.org/?category=network&v=1">source</a>)
+						</p>
+					</section>	
+
+				</section>	
+
+				<section>
+					<section>
+						<h1>What's the difference between HTTP 1 and HTTP 2?</h1>
+						<p class="fragment">(At least the bits I understand)</p>
+					</section>	
+
+					<section>
+						<h1>HTTP/2 sends all assets through a single TCP/IP connection</h1>
+					</section>	
+
+					<section>
+						<img src="images/ehrmagerd.jpg" />
+					</section>	
+
+					<section>
+						<h1>No more concatenating files together</h1>
+						<p class="fragment">No more CSS Sprites</p>
+						<p class="fragment">No more CSS concatenation</p>
+						<p class="fragment">No more JS concatenation</p>
+					</section>	
+
+					<section>
+						<h1>No more domain sharding</h1>
+						<p class="fragment">Each connection to a new domain means establishing a new TCP/IP connection.</p>
+					</section>	
+
+					<section>
+						<h1><a href="https://http2.akamai.com/demo">Akamai HTTP/2 Demo</a></h1>
+					</section>	
+
+				</section>	
+
+				<section>
+					<h1>Tools to see how your site is performing</h1>
+					<p class="fragment">Chrome network tab</p>
+					<p class="fragment"><a href="http://www.webpagetest.org/">webpagetest.org</a></p>
+					<p class="fragment"><a href="http://www.webpagetest.org/video/">webpagetest.org Visual Comparison</a></p>
+					<p class="fragment"><a href="https://developers.google.com/speed/pagespeed/">Google PageSpeed Tools</a></p>
+				</section>	
+
+				<section>
+					<h1>Let's Optimize a Website!</h1>
+				</section>	
+
+				<section>
+					<section>
+						<h1>Links</h1>
+						<h2>Tools</h2>
+						<ul>
+							<li><a href="http://www.imagemagick.org/script/index.php">ImageMagick</a></li>
+							<li><a href="https://imageoptim.com/">ImageOptim</a></li>
+							<li><a href="http://jamiemason.github.io/ImageOptim-CLI/">ImageOptim CLI</a></li>
+							<li><a href="http://gulpjs.com/">Gulp</a></li>
+							<li><a href="http://gruntjs.com/">Grunt</a></li>
+						</ul>
+					</section>
+
+					<section>
+						<h1>Bibliography</h1>
+						<ul>
+							<li>http://designingforperformance.com/</li>
+							<li>http://httparchive.org/</li>
+							<li>https://httpwg.github.io/</li>
+							<li>https://http2.github.io/</li>
+							<li>https://tools.ietf.org/html/rfc7540</li>
+							<li>https://en.wikipedia.org/wiki/Transmission_Control_Protocol</li>
+							<li>https://en.wikipedia.org/wiki/Internet_protocol_suite</li>
+							<li>http://www.tcpipguide.com/free/t_TCPConnectionEstablishmentProcessTheThreeWayHandsh-3.htm</li>
+							<li>http://www.stevesouders.com/blog/2013/09/05/domain-sharding-revisited/</li>
+							<li>https://imgflip.com/memegenerator</li>
+					</section>
+
+					<section>
+						<h1>Get this project</h1>
+						<p class="fragment">Slides: https://tmbritton.github.io/frontend-web-perf</p>
+					</section>	
+
+				</section>	
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
